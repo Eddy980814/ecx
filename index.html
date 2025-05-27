@@ -22,35 +22,36 @@
       border-radius: 12px;
       box-shadow: 0 10px 30px rgba(0,0,0,0.15);
     }
+    h1, h2 {
+      text-align: center;
+      margin-bottom: 0.5rem;
+    }
     h1 {
       font-weight: 800;
       color: #222;
-      text-align: center;
-      margin-bottom: 0.1rem;
     }
     h2 {
       font-weight: 400;
       color: #666;
       font-style: italic;
-      text-align: center;
-      margin-bottom: 1.8rem;
       font-size: 1.2rem;
+      margin-bottom: 1.8rem;
     }
     label {
       font-weight: 600;
       font-size: 1rem;
     }
-    input[type=number] {
+    select, input[type=number] {
       font-size: 1.1rem;
       padding: 0.5rem;
-      text-align: center;
       border-radius: 6px;
       border: 1.8px solid #74ebd5;
       transition: border-color 0.3s ease;
       width: 100%;
       margin-bottom: 1.5rem;
+      text-align: center;
     }
-    input[type=number]:focus {
+    select:focus, input[type=number]:focus {
       outline: none;
       border-color: #4ca1af;
       box-shadow: 0 0 8px #4ca1af;
@@ -98,19 +99,18 @@
       box-shadow: inset 0 0 6px #d3d9df;
       margin-bottom: 1.8rem;
     }
-    .loading {
-      color: #4ca1af;
-      font-weight: 600;
-      text-align: center;
-      margin-bottom: 1.5rem;
-      display: none;
-    }
   </style>
 </head>
 <body>
   <div class="container" role="main" aria-label="ECX發卡系統主要區塊">
     <h1>ECX發卡系統</h1>
     <h2>Simple Auto Card Delivery System</h2>
+
+    <label for="payMethod">請選擇付款方式：</label>
+    <select id="payMethod" name="payMethod" aria-label="付款方式選擇">
+      <option value="convenience_store">超商代碼</option>
+      <option value="atm_transfer">ATM繳款</option>
+    </select>
 
     <label for="qty" id="qtyLabel">請選擇購買數量 (1~5 張)：</label>
     <input
@@ -129,47 +129,34 @@
     <button id="btnShowPayments" type="button" aria-describedby="paymentList">
       顯示付款帳號
     </button>
-    <div class="loading" id="loadingPayments">資料載入中...</div>
     <h5>付款帳號（請依此付款）：</h5>
     <pre id="paymentList" aria-live="polite" aria-atomic="true">尚未顯示付款帳號</pre>
 
     <button id="btnShowCards" type="button" aria-describedby="cardList">
       付款完成，點此取得卡密
     </button>
-    <div class="loading" id="loadingCards">資料載入中...</div>
     <h5>您的卡密：</h5>
     <pre id="cardList" aria-live="polite" aria-atomic="true">尚未取得卡密</pre>
   </div>
 
   <script>
-    let payments = [];
+    let payments = {};
     let cards = [];
-
-    const loadingPayments = document.getElementById('loadingPayments');
-    const loadingCards = document.getElementById('loadingCards');
 
     async function loadData() {
       try {
-        loadingPayments.style.display = 'block';
-        loadingCards.style.display = 'block';
-
         payments = await fetch('payment.json').then(res => {
           if (!res.ok) throw new Error('payment.json 讀取錯誤');
           return res.json();
         });
-
         cards = await fetch('cards.json').then(res => {
           if (!res.ok) throw new Error('cards.json 讀取錯誤');
           return res.json();
         });
-
       } catch (e) {
         alert('讀取資料失敗，請確認 payment.json 和 cards.json 是否存在且格式正確。');
-        payments = [];
+        payments = {};
         cards = [];
-      } finally {
-        loadingPayments.style.display = 'none';
-        loadingCards.style.display = 'none';
       }
     }
     loadData();
@@ -184,33 +171,25 @@
     }
 
     document.getElementById('btnShowPayments').addEventListener('click', () => {
+      const payMethod = document.getElementById('payMethod').value;
       const qty = validateQty();
       if (qty === null) return;
-      if (payments.length < qty) {
+
+      if (!payments[payMethod] || payments[payMethod].length < qty) {
         alert('付款帳號庫存不足，請聯絡管理員');
         return;
       }
+
       let list = '';
       for (let i = 0; i < qty; i++) {
-        list += `付款帳號 ${i + 1}：${payments[i]}\n`;
+        list += `付款帳號 ${i + 1}：${payments[payMethod][i]}\n`;
       }
       document.getElementById('paymentList').innerText = list;
       document.getElementById('cardList').innerText = '請完成付款後，再點擊「付款完成，點此取得卡密」';
     });
 
     document.getElementById('btnShowCards').addEventListener('click', () => {
-      const qty = validateQty();
-      if (qty === null) return;
-      if (cards.length < qty) {
-        alert('卡密庫存不足，請聯絡管理員');
-        return;
-      }
-      let list = '';
-      for (let i = 0; i < qty; i++) {
-        list += `卡密 ${i + 1}：${cards[i]}\n`;
-      }
-      document.getElementById('cardList').innerText = list;
-    });
+      const
   </script>
 </body>
 </html>
