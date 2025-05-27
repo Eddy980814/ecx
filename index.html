@@ -7,136 +7,87 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
   <style>
     body {
-      background: linear-gradient(135deg, #74ebd5 0%, #ACB6E5 100%);
+      background: linear-gradient(135deg, #6dd5ed, #2193b0);
       font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
       min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
       padding: 2rem;
+      color: #333;
     }
     .container {
-      max-width: 480px;
+      max-width: 500px;
       background: #fff;
-      padding: 2.5rem 2rem;
-      border-radius: 12px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-    }
-    h1, h2 {
-      text-align: center;
-      margin-bottom: 0.5rem;
+      padding: 2rem 2.5rem;
+      border-radius: 16px;
+      box-shadow: 0 12px 24px rgba(0,0,0,0.2);
+      transition: all 0.3s ease;
     }
     h1 {
       font-weight: 800;
       color: #222;
+      text-align: center;
+      margin-bottom: 0.25rem;
     }
     h2 {
       font-weight: 400;
       color: #666;
       font-style: italic;
-      font-size: 1.2rem;
+      text-align: center;
       margin-bottom: 1.8rem;
+      font-size: 1.15rem;
+    }
+    select, input[type=number], button {
+      width: 100%;
+      margin-bottom: 1.2rem;
+      font-size: 1rem;
+    }
+    button {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      padding: 0.7rem;
+      border-radius: 8px;
+      transition: background 0.2s ease;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    pre {
+      background: #f8f9fa;
+      padding: 1rem;
+      border-radius: 8px;
+      white-space: pre-wrap;
+      font-size: 0.95rem;
+      margin-top: -0.5rem;
+      color: #222;
     }
     label {
       font-weight: 600;
-      font-size: 1rem;
-    }
-    select, input[type=number] {
-      font-size: 1.1rem;
-      padding: 0.5rem;
-      border-radius: 6px;
-      border: 1.8px solid #74ebd5;
-      transition: border-color 0.3s ease;
-      width: 100%;
-      margin-bottom: 1.5rem;
-      text-align: center;
-    }
-    select:focus, input[type=number]:focus {
-      outline: none;
-      border-color: #4ca1af;
-      box-shadow: 0 0 8px #4ca1af;
-    }
-    button {
-      font-weight: 700;
-      font-size: 1.1rem;
-      border-radius: 8px;
-      margin-bottom: 1.3rem;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-      width: 100%;
-      padding: 0.65rem 0;
-    }
-    #btnShowPayments {
-      background-color: #4ca1af;
-      border: none;
-      color: white;
-    }
-    #btnShowPayments:hover {
-      background-color: #3a828a;
-    }
-    #btnShowCards {
-      background-color: #27ae60;
-      border: none;
-      color: white;
-    }
-    #btnShowCards:hover {
-      background-color: #1f7a4d;
-    }
-    h5 {
-      font-weight: 600;
-      margin-bottom: 0.5rem;
-      color: #333;
-    }
-    pre {
-      background: #f5f7fa;
-      padding: 1rem 1.2rem;
-      border-radius: 8px;
-      font-size: 1rem;
-      min-height: 90px;
-      white-space: pre-wrap;
-      word-break: break-word;
-      color: #222;
-      box-shadow: inset 0 0 6px #d3d9df;
-      margin-bottom: 1.8rem;
+      margin-top: 0.5rem;
     }
   </style>
 </head>
 <body>
-  <div class="container" role="main" aria-label="ECX發卡系統主要區塊">
+  <div class="container">
     <h1>ECX發卡系統</h1>
-    <h2>Simple Auto Card Delivery System</h2>
+    <h2>Auto Card Delivery</h2>
 
-    <label for="payMethod">請選擇付款方式：</label>
-    <select id="payMethod" name="payMethod" aria-label="付款方式選擇">
+    <label for="payMethod">選擇付款方式</label>
+    <select id="payMethod" class="form-select">
       <option value="convenience_store">超商代碼</option>
-      <option value="atm_transfer">ATM繳款</option>
+      <option value="atm_transfer">ATM轉帳</option>
     </select>
 
-    <label for="qty" id="qtyLabel">請選擇購買數量 (1~5 張)：</label>
-    <input
-      type="number"
-      id="qty"
-      name="qty"
-      aria-labelledby="qtyLabel"
-      min="1"
-      max="5"
-      value="1"
-      inputmode="numeric"
-      pattern="[1-5]"
-      required
-    />
+    <label for="qty">購買數量（1～5）</label>
+    <input type="number" id="qty" class="form-control" min="1" max="5" value="1" />
 
-    <button id="btnShowPayments" type="button" aria-describedby="paymentList">
-      顯示付款帳號
-    </button>
-    <h5>付款帳號（請依此付款）：</h5>
-    <pre id="paymentList" aria-live="polite" aria-atomic="true">尚未顯示付款帳號</pre>
+    <button id="btnShowPayments">➤ 顯示付款資訊</button>
+    <pre id="paymentList">尚未顯示付款帳號</pre>
 
-    <button id="btnShowCards" type="button" aria-describedby="cardList">
-      付款完成，點此取得卡密
-    </button>
-    <h5>您的卡密：</h5>
-    <pre id="cardList" aria-live="polite" aria-atomic="true">尚未取得卡密</pre>
+    <button id="btnShowCards">✔ 已付款，取得卡密</button>
+    <pre id="cardList">尚未取得卡密</pre>
   </div>
 
   <script>
@@ -145,51 +96,43 @@
 
     async function loadData() {
       try {
-        payments = await fetch('payment.json').then(res => {
-          if (!res.ok) throw new Error('payment.json 讀取錯誤');
-          return res.json();
-        });
-        cards = await fetch('cards.json').then(res => {
-          if (!res.ok) throw new Error('cards.json 讀取錯誤');
-          return res.json();
-        });
-      } catch (e) {
-        alert('讀取資料失敗，請確認 payment.json 和 cards.json 是否存在且格式正確。');
-        payments = {};
-        cards = [];
+        const [paymentRes, cardRes] = await Promise.all([
+          fetch("payment.json"),
+          fetch("cards.json")
+        ]);
+        payments = await paymentRes.json();
+        cards = await cardRes.json();
+      } catch (err) {
+        alert("⚠ 無法讀取資料，請確認 payment.json 和 cards.json 是否存在於同一資料夾");
       }
     }
+
     loadData();
 
-    function validateQty() {
-      const qty = parseInt(document.getElementById('qty').value);
-      if (isNaN(qty) || qty < 1 || qty > 5) {
-        alert('購買數量請介於1到5張');
-        return null;
-      }
-      return qty;
-    }
+    document.getElementById("btnShowPayments").addEventListener("click", () => {
+      const method = document.getElementById("payMethod").value;
+      const qty = parseInt(document.getElementById("qty").value);
+      const list = payments[method];
 
-    document.getElementById('btnShowPayments').addEventListener('click', () => {
-      const payMethod = document.getElementById('payMethod').value;
-      const qty = validateQty();
-      if (qty === null) return;
-
-      if (!payments[payMethod] || payments[payMethod].length < qty) {
-        alert('付款帳號庫存不足，請聯絡管理員');
+      if (!list || list.length < qty) {
+        document.getElementById("paymentList").innerText = "⚠ 付款帳號不足，請聯絡客服或稍後再試";
         return;
       }
 
-      let list = '';
-      for (let i = 0; i < qty; i++) {
-        list += `付款帳號 ${i + 1}：${payments[payMethod][i]}\n`;
-      }
-      document.getElementById('paymentList').innerText = list;
-      document.getElementById('cardList').innerText = '請完成付款後，再點擊「付款完成，點此取得卡密」';
+      const shown = list.slice(0, qty).map((val, i) => `帳號 ${i + 1}：${val}`).join("\n");
+      document.getElementById("paymentList").innerText = shown;
     });
 
-    document.getElementById('btnShowCards').addEventListener('click', () => {
-      const
+    document.getElementById("btnShowCards").addEventListener("click", () => {
+      const qty = parseInt(document.getElementById("qty").value);
+      if (cards.length < qty) {
+        document.getElementById("cardList").innerText = "⚠ 卡密不足，請稍後再試";
+        return;
+      }
+
+      const result = cards.slice(0, qty).map((val, i) => `卡密 ${i + 1}：${val}`).join("\n");
+      document.getElementById("cardList").innerText = result;
+    });
   </script>
 </body>
 </html>
